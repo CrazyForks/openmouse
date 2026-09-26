@@ -10,12 +10,14 @@ function SuperstrikeSteps({
   max,
   value,
   onChange,
+  disabled = false,
 }: {
   id: string;
   min: number;
   max: number;
   value: number;
   onChange: (next: number) => void;
+  disabled?: boolean;
 }): ReactNode {
   return (
     <div className="superstrike-steps" role="group" aria-label={id.replace("logitech-", "").replaceAll("-", " ")}>
@@ -26,6 +28,7 @@ function SuperstrikeSteps({
             key={step}
             type="button"
             aria-pressed={step === value}
+            disabled={disabled}
             onClick={() => onChange(step)}
           >
             {step}
@@ -77,22 +80,54 @@ function TuningControls({
     },
   ];
   const slug = { actuation: "actuation", rapidTrigger: "rapid-trigger", haptics: "haptics" } as const;
+  // Only shown when the mouse reports it; the sensitivity steps grey out while off.
+  const rapidTriggerEnabled = tuning.rapidTriggerEnabled;
   return (
     <>
-      {rows.map((row) => (
-        <div key={row.setting} className="superstrike-control-row">
-          <label>
-            {row.label} <small>{row.low} <span>{row.high}</span></small>
-          </label>
+      {rows.map((row) => {
+        const steps = (
           <SuperstrikeSteps
             id={`logitech-${group}-${slug[row.setting]}`}
             min={row.min}
             max={row.max}
             value={row.value}
+            disabled={row.setting === "rapidTrigger" && rapidTriggerEnabled === false}
             onChange={(next) => control.setAnalogTuningValue(group, row.setting, next)}
           />
-        </div>
-      ))}
+        );
+        return (
+          <div key={row.setting} className="superstrike-control-row">
+            <label>
+              {row.label} <small>{row.low} <span>{row.high}</span></small>
+            </label>
+            {row.setting === "rapidTrigger" && rapidTriggerEnabled !== undefined ? (
+              // One grid cell, like every other row: the switch sits beside the steps.
+              <div className="superstrike-rapid-controls">
+                <div
+                  id={`logitech-${group}-rapid-trigger-enabled`}
+                  className="superstrike-steps superstrike-switch"
+                  role="group"
+                  aria-label="rapid trigger on or off"
+                >
+                  <div>
+                    {([false, true] as const).map((on) => (
+                      <button
+                        key={String(on)}
+                        type="button"
+                        aria-pressed={rapidTriggerEnabled === on}
+                        onClick={() => control.setAnalogTuningValue(group, "rapidTriggerEnabled", on)}
+                      >
+                        {t(locale, on ? "common.on" : "common.off")}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {steps}
+              </div>
+            ) : steps}
+          </div>
+        );
+      })}
     </>
   );
 }

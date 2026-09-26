@@ -2682,7 +2682,7 @@ export function setAnalogTuningMode(mode: "independent" | "both"): void {
 export function setAnalogTuningValue(
   group: "left" | "right" | "both",
   setting: keyof AnalogTuning,
-  value: number,
+  value: number | boolean,
 ): void {
   analogTuning = { ...analogTuning, [group]: { ...analogTuning[group], [setting]: value } };
   emit();
@@ -4557,8 +4557,8 @@ function showSuperstrikePreview(): void {
       maxRapidTrigger: 5,
       maxHaptics: 5,
       buttons: [
-        { actuation: 3, rapidTrigger: 2, haptics: 3 },
-        { actuation: 3, rapidTrigger: 2, haptics: 3 },
+        { actuation: 3, rapidTrigger: 2, haptics: 3, rapidTriggerEnabled: true },
+        { actuation: 3, rapidTrigger: 2, haptics: 3, rapidTriggerEnabled: true },
       ],
     },
     pollingRateHz: 4000,
