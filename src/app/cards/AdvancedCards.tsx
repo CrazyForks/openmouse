@@ -883,6 +883,14 @@ export function EggFilterCard({ snapshot }: { snapshot: ControlSnapshot }): Reac
         label={t(locale, "adv.jitterFilter")}
         value={status.motionJitterFilter}
         onChange={(next) => control.applyEggFilter("motionJitter", next)}
+        hidden={status.motionJitterFilter == null}
+      />
+      <SwitchRow
+        id="egg-glass-mode-toggle"
+        label={t(locale, "adv.glassMode")}
+        value={status.eggGlassMode}
+        onChange={(next) => control.applyEggGlassMode(next)}
+        hidden={status.eggSupportsGlassMode !== true}
       />
     </article>
   );

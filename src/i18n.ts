@@ -468,6 +468,7 @@ const en = {
   "adv.filters": "Filters",
   "adv.slamclickFilter": "Slamclick filter",
   "adv.jitterFilter": "Motion-jitter filter",
+  "adv.glassMode": "Sensor glass mode",
   "adv.gxMode": "GX switch mode",
   "adv.leftButton": "Left button",
   "adv.rightButton": "Right button",

@@ -205,9 +205,12 @@ test("a driver may opt into the advanced section and still suppress its cards", 
 });
 
 test("the experimental polling card follows the interface preference", () => {
-  const egg = { status: { brand: "Endgame Gear", ui: { family: "egg-op1" } } };
+  const egg = { status: { brand: "Endgame Gear", ui: { family: "egg-op1" }, eggPollingDivider: 1 } };
   assert.equal(cardAvailability(snapshot({ ...egg, showExperimental: true })).eggPolling, true);
   assert.equal(cardAvailability(snapshot({ ...egg, showExperimental: false })).eggPolling, false);
+  // The OP1w/XM2w 4K v2 driver leaves the divider out, so its card stays hidden.
+  const egg4k = { status: { brand: "Endgame Gear", ui: { family: "egg-op1" } } };
+  assert.equal(cardAvailability(snapshot({ ...egg4k, showExperimental: true })).eggPolling, false);
 });
 
 test("onboard profiles need a Logitech mouse reporting a known mode", () => {
