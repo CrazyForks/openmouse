@@ -161,7 +161,8 @@ import {
   type KeychronNapeButtonAction,
   type KeychronNapeLayerKeymap,
 } from "@openmouse/protocol/keychron";
-import { SUPPORTED_HID_FILTERS, VENDOR_ID } from "@openmouse/protocol/drivers/vendors";
+import { VENDOR_ID } from "@openmouse/protocol/drivers/vendors";
+import { BASILISK_V3_PRO_BLUETOOTH, HID_FILTERS } from "./hid-filters";
 import { WLMouseHidClient } from "@openmouse/protocol/drivers/wlmouse/hid";
 import { MicrosoftHidClient } from "@openmouse/protocol/drivers/microsoft/hid";
 import { DareuHidClient } from "@openmouse/protocol/drivers/dareu/hid";
@@ -2289,7 +2290,7 @@ function handleHidDisconnect(event: HIDConnectionEvent): void {
 
 async function requestSupportedClient(): Promise<SupportedClient | null> {
   if (!navigator.hid) throw new Error(st("ctl.noWebHid"));
-  const devices = await navigator.hid.requestDevice({ filters: SUPPORTED_HID_FILTERS });
+  const devices = await navigator.hid.requestDevice({ filters: HID_FILTERS });
   if (devices.length === 0) return null;
 
   if (devices.some((device) => eggWeIsSupported(device))) {
@@ -2305,6 +2306,11 @@ async function requestSupportedClient(): Promise<SupportedClient | null> {
   if (best?.client) {
     if (isEggWeClient(best.client)) await eggWePrepare(best.client);
     return best.client;
+  }
+
+  if (devices.some((device) => device.vendorId === BASILISK_V3_PRO_BLUETOOTH.vendorId
+    && device.productId === BASILISK_V3_PRO_BLUETOOTH.productId)) {
+    throw new Error(st("ctl.razerBluetooth"));
   }
 
   const details = devices.map((device) => describeHidDevice(device)).join(" · ");

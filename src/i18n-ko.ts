@@ -678,6 +678,7 @@ export const ko: Record<I18nKey, string> = {
   "ctl.reconnecting": "재연결 중",
   "ctl.readingPrev": "이전에 승인된 장치를 읽는 중입니다.",
   "ctl.useAdd": "마우스가 자동으로 재연결되지 않으면 \"장치 추가\"를 사용하세요.",
+  "ctl.razerBluetooth": "Basilisk V3 Pro는 아직 블루투스로 설정할 수 없습니다. 동글을 사용해 HyperSpeed(2.4GHz)로 전환하거나 케이블을 연결하세요.",
   "ctl.couldNotReconnect": "마우스를 재연결할 수 없습니다",
   "ctl.dpiUnsupported": "이 DPI 값은 이 마우스에서 지원되지 않습니다.",
   "ctl.closestStep": "이 마우스는 {dpi} DPI를 지원하지 않습니다. 지원되는 가장 가까운 값은 {closest}입니다.",

@@ -678,6 +678,7 @@ export const zh: Record<I18nKey, string> = {
   "ctl.reconnecting": "重新连接中",
   "ctl.readingPrev": "正在读取此前已授权的设备。",
   "ctl.useAdd": "如果鼠标未能自动重连，请使用“添加设备”。",
+  "ctl.razerBluetooth": "Basilisk V3 Pro 暂不支持通过蓝牙设置。请使用接收器切换到 HyperSpeed（2.4 GHz）模式，或连接数据线。",
   "ctl.couldNotReconnect": "无法重新连接鼠标",
   "ctl.dpiUnsupported": "此鼠标不支持该 DPI 数值。",
   "ctl.closestStep": "此鼠标不支持 {dpi} DPI。最接近的支持挡位是 {closest}。",

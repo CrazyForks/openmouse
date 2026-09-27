@@ -678,6 +678,7 @@ export const ja: Record<I18nKey, string> = {
   "ctl.reconnecting": "再接続中",
   "ctl.readingPrev": "以前に許可されたデバイスを読み取り中です。",
   "ctl.useAdd": "マウスが自動的に再接続しない場合は「デバイスを追加」を使用してください。",
+  "ctl.razerBluetooth": "Basilisk V3 Pro はまだ Bluetooth では設定できません。ドングルで HyperSpeed（2.4 GHz）に切り替えるか、ケーブルを接続してください。",
   "ctl.couldNotReconnect": "マウスを再接続できませんでした",
   "ctl.dpiUnsupported": "このDPI値はこのマウスでサポートされていません。",
   "ctl.closestStep": "このマウスは{dpi} DPIに対応していません。対応している最も近い値は{closest}です。",

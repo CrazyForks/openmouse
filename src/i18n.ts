@@ -681,6 +681,7 @@ const en = {
   "ctl.reconnecting": "Reconnecting",
   "ctl.readingPrev": "Reading the previously authorized device.",
   "ctl.useAdd": "Use Add device if the mouse does not reconnect automatically.",
+  "ctl.razerBluetooth": "The Basilisk V3 Pro can't be set up over Bluetooth yet. Switch it to HyperSpeed (2.4 GHz) with the dongle, or plug in the cable.",
   "ctl.couldNotReconnect": "Could not reconnect the mouse",
   "ctl.dpiUnsupported": "That DPI value is not supported by this mouse.",
   "ctl.closestStep": "This mouse cannot do {dpi} DPI. The closest step it supports is {closest}.",

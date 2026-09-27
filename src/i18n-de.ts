@@ -678,6 +678,7 @@ export const de: Record<I18nKey, string> = {
   "ctl.reconnecting": "Wird wiederverbunden",
   "ctl.readingPrev": "Das zuvor autorisierte Gerät wird gelesen.",
   "ctl.useAdd": "Nutze Gerät hinzufügen, falls sich die Maus nicht automatisch neu verbindet.",
+  "ctl.razerBluetooth": "Die Basilisk V3 Pro lässt sich über Bluetooth noch nicht einstellen. Stelle sie mit dem Dongle auf HyperSpeed (2,4 GHz) um oder schließe das Kabel an.",
   "ctl.couldNotReconnect": "Die Maus konnte nicht wiederverbunden werden",
   "ctl.dpiUnsupported": "Dieser DPI-Wert wird von dieser Maus nicht unterstützt.",
   "ctl.closestStep": "Diese Maus kann keine {dpi} DPI. Der nächstgelegene unterstützte Schritt ist {closest}.",
