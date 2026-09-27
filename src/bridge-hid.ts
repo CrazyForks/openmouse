@@ -18,7 +18,7 @@
 // socket. Safari does not, and blocks it as mixed content — Safari needs
 // Bridge to serve the app itself over loopback, which is a separate change.
 
-import { SUPPORTED_HID_FILTERS } from "@openmouse/protocol/drivers/vendors";
+import { HID_FILTERS } from "./device/hid-filters.ts";
 import { describeHidDevice, markHidActivity } from "./hid-diagnostics.ts";
 
 
@@ -89,7 +89,8 @@ type Command =
   | { type: "unlisten"; device: string }
   | { type: "sendReport"; device: string; reportId: number; data: number[] }
   | { type: "sendFeatureReport"; device: string; reportId: number; data: number[] }
-  | { type: "receiveFeatureReport"; device: string; reportId: number };
+  | { type: "receiveFeatureReport"; device: string; reportId: number }
+  | { type: "receiveInputReport"; device: string; reportId: number };
 
 class BridgeInputReportEvent extends Event {
   readonly device: HIDDevice;
@@ -200,6 +201,12 @@ class BridgeHidDevice implements HIDDevice {
 
   async sendFeatureReport(reportId: number, data: BufferSource): Promise<void> {
     await this.#client.request({ type: "sendFeatureReport", device: this.key, reportId, data: toBytes(data) });
+  }
+
+  async receiveInputReport(reportId: number): Promise<DataView> {
+    const reply = await this.#client.request({ type: "receiveInputReport", device: this.key, reportId });
+    if (reply.data === undefined) throw new Error("Bridge reply missing data");
+    return new DataView(Uint8Array.from(reply.data).buffer);
   }
 
   async receiveFeatureReport(reportId: number): Promise<DataView> {
@@ -403,18 +410,23 @@ class BridgeHid implements HID {
   #client: BridgeClient;
   #poll: ReturnType<typeof setInterval> | null = null;
   #listing: Promise<HIDDevice[]> | null = null;
+  // Like WebHID, devices already present when the page first enumerates are
+  // not "connected" events; emitting them made the app activate each one in
+  // turn after reconnectAuthorizedDevice picked the remembered mouse.
+  #enumerated = false;
   #listeners: Record<"connect" | "disconnect", Set<(event: HIDConnectionEvent) => void>> = {
     connect: new Set(),
     disconnect: new Set(),
   };
 
-  constructor(transport: BridgeTransport) {
+  constructor(transport: BridgeTransport, onExternalDisconnect?: () => void) {
     this.#client = new BridgeClient(transport);
     this.#client.onDisconnect = () => {
       if (this.#poll !== null) clearInterval(this.#poll);
       this.#poll = null;
       for (const device of this.#client.devices.values()) this.#emit("disconnect", device);
       this.#client.devices.clear();
+      onExternalDisconnect?.();
     };
   }
 
@@ -439,10 +451,13 @@ class BridgeHid implements HID {
   }
 
   async #listDevices(): Promise<HIDDevice[]> {
-    const reply = await this.#client.request({ type: "list", vendorIds: vendorIdsFor(SUPPORTED_HID_FILTERS) });
+    const reply = await this.#client.request({ type: "list", vendorIds: vendorIdsFor(HID_FILTERS) });
     const { devices, added, removed } = this.#client.reconcile(reply.devices ?? []);
-    for (const device of added) this.#emit("connect", device);
-    for (const device of removed) this.#emit("disconnect", device);
+    if (this.#enumerated) {
+      for (const device of added) this.#emit("connect", device);
+      for (const device of removed) this.#emit("disconnect", device);
+    }
+    this.#enumerated = true;
     this.#startPolling();
     return devices;
   }
@@ -450,6 +465,7 @@ class BridgeHid implements HID {
   async requestDevice(options: { filters: HIDDeviceFilter[] }): Promise<HIDDevice[]> {
     const reply = await this.#client.request({ type: "list", vendorIds: vendorIdsFor(options.filters) });
     const { devices } = this.#client.reconcile(reply.devices ?? []);
+    this.#enumerated = true;
     this.#startPolling();
     return devices.filter((device) => options.filters.some((filter) => matchesFilter(device, filter)));
   }
@@ -477,8 +493,34 @@ class BridgeHid implements HID {
 }
 
 /** The WebHID shim over a transport. Exported for tests; use `installBridgeHid` in the app. */
-export function bridgeHid(transport: BridgeTransport): HID {
-  return new BridgeHid(transport);
+export function bridgeHid(transport: BridgeTransport, onDisconnect?: () => void): HID {
+  return new BridgeHid(transport, onDisconnect);
+}
+
+// Whether `navigator.hid` is currently the Bridge shim (as opposed to the
+// browser's own WebHID, or nothing at all). Tracked separately from the
+// getDevices()/status polling below so a UI component — the Home page's
+// Bridge card — can show "connected" the instant the socket opens and
+// "disconnected" the instant Bridge's process goes away, without polling
+// bridgeStatus() itself just to answer "is it there".
+let bridgeHidActive = false;
+const bridgeHidActiveListeners = new Set<(active: boolean) => void>();
+
+function setBridgeHidActive(active: boolean): void {
+  if (bridgeHidActive === active) return;
+  bridgeHidActive = active;
+  for (const listener of bridgeHidActiveListeners) listener(active);
+}
+
+export function isBridgeHidActive(): boolean {
+  return bridgeHidActive;
+}
+
+/** Returns an unsubscribe function. Immediately calls `listener` with the current state. */
+export function subscribeBridgeHidActive(listener: (active: boolean) => void): () => void {
+  bridgeHidActiveListeners.add(listener);
+  listener(bridgeHidActive);
+  return () => bridgeHidActiveListeners.delete(listener);
 }
 
 async function openSocket(url: string): Promise<BridgeTransport | null> {
@@ -568,7 +610,14 @@ async function openSocket(url: string): Promise<BridgeTransport | null> {
 export async function installBridgeHid(options: { force?: boolean } = {}): Promise<boolean> {
   if (navigator.hid && !options.force) return true;
   const transport = await openSocket(BRIDGE_SOCKET_URL);
-  if (!transport) return Boolean(navigator.hid);
-  Object.defineProperty(navigator, "hid", { value: bridgeHid(transport), configurable: true });
+  if (!transport) {
+    setBridgeHidActive(false);
+    return Boolean(navigator.hid);
+  }
+  Object.defineProperty(navigator, "hid", {
+    value: bridgeHid(transport, () => setBridgeHidActive(false)),
+    configurable: true,
+  });
+  setBridgeHidActive(true);
   return true;
 }

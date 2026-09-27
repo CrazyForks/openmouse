@@ -24,7 +24,7 @@ import { DpiCard } from "./cards/DpiCard";
 import { LightforceCard, PollingCard, SensorCard } from "./cards/PerformanceCards";
 import { LightingCard } from "./cards/LightingCard";
 import { MxMasterButtonsCard, MxMasterCards } from "./cards/MxMasterCards";
-import { AtkButtonCard, AtkProfileCard, AtkReceiverCard } from "./cards/AtkCards";
+import { AtkButtonCard, AtkDongleCard, AtkProfileCard, AtkReceiverCard, AtkSensorCard } from "./cards/AtkCards";
 import {
   DebounceCard,
   EggButtonCard,
@@ -66,7 +66,7 @@ const TAB_ICON: Record<WorkspaceTab, LucideIcon> = {
   advanced: Settings2,
 };
 
-function TabIcon({ tab }: { tab: WorkspaceTab }): ReactNode {
+export function TabIcon({ tab }: { tab: WorkspaceTab }): ReactNode {
   const Icon = TAB_ICON[tab];
   return <Icon size={13} strokeWidth={1.8} aria-hidden="true" />;
 }
@@ -87,9 +87,12 @@ interface DiagramAnnotation {
 const DIAGRAM_RAIL = { left: 0.09, right: 0.91 };   // vertical trunk column
 const DIAGRAM_TICK = { left: 0, right: 100 };       // tick end at canvas edge
 
-function DeviceShowcase({ snapshot, onRequestArtwork }: {
+// Device artwork requests go straight to the documented GitHub issue form
+// (public/devices/README.md, .github/ISSUE_TEMPLATE/device-artwork.yml).
+const ARTWORK_ISSUE_URL = "https://github.com/OpenMouse-Project/openmouse/issues/new?template=device-artwork.yml";
+
+function DeviceShowcase({ snapshot }: {
   snapshot: ControlSnapshot;
-  onRequestArtwork: () => void;
 }): ReactNode {
   const status = snapshot.status;
   if (!status) return null;
@@ -105,6 +108,7 @@ function DeviceShowcase({ snapshot, onRequestArtwork }: {
       status.name,
     )
   );
+  const artworkIssueHref = `${ARTWORK_ISSUE_URL}${status.name ? `&title=${encodeURIComponent(`Artwork request: ${status.name}`)}` : ""}`;
 
   const annotations: DiagramAnnotation[] = ([
     {
@@ -242,20 +246,21 @@ function DeviceShowcase({ snapshot, onRequestArtwork }: {
         </div>
       </div>
       {needsArtwork ? (
-        <button
-          type="button"
+        <a
           className="artwork-upload-trigger"
-          onClick={onRequestArtwork}
+          href={artworkIssueHref}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           <ImageUp size={14} strokeWidth={2.2} aria-hidden="true" />
           {t(locale, "artreq.request" as I18nKey)}
-        </button>
+        </a>
       ) : null}
     </div>
   );
 }
 
-function DeviceShowcaseSidebar({ snapshot }: { snapshot: ControlSnapshot }): ReactNode {
+export function DeviceShowcaseSidebar({ snapshot }: { snapshot: ControlSnapshot }): ReactNode {
   const status = snapshot.status;
   if (!status) return null;
   const locale = snapshot.preferences.locale;
@@ -377,9 +382,8 @@ function OverviewEmpty({ snapshot, compact = false }: { snapshot: ControlSnapsho
   );
 }
 
-function OverviewContent({ snapshot, onRequestArtwork }: {
+function OverviewContent({ snapshot }: {
   snapshot: ControlSnapshot;
-  onRequestArtwork: () => void;
 }): ReactNode {
   const status = snapshot.status;
   if (!status) return <OverviewEmpty snapshot={snapshot} />;
@@ -387,7 +391,7 @@ function OverviewContent({ snapshot, onRequestArtwork }: {
   const powerOverview = status.ui?.powerOverview === true;
   return (
     <>
-      <DeviceShowcase snapshot={snapshot} onRequestArtwork={onRequestArtwork} />
+      <DeviceShowcase snapshot={snapshot} />
       {powerOverview && (has.teevolutionDpiLighting || has.sleep) ? (
         <section id="power-overview-settings" className="settings-grid device-data" aria-label="Power settings">
           {has.teevolutionDpiLighting ? <DpiLightingCard snapshot={snapshot} /> : null}
@@ -398,16 +402,22 @@ function OverviewContent({ snapshot, onRequestArtwork }: {
   );
 }
 
+/**
+ * `gameProfile` renders the cards for editing a game profile on the Games
+ * page: only settings, without the device showcase, diagnostics, or the
+ * cards that manage the hardware itself (signal, receiver pairing, device
+ * details), none of which belong to a per-game profile.
+ */
 export function Workspace({
   snapshot,
   onOpenCapture,
   onShareProfile,
-  onRequestArtwork,
+  gameProfile = false,
 }: {
   snapshot: ControlSnapshot;
   onOpenCapture: () => void;
   onShareProfile: () => void;
-  onRequestArtwork: () => void;
+  gameProfile?: boolean;
 }): ReactNode {
   const status = snapshot.status;
   const tab = snapshot.workspaceTab;
@@ -415,12 +425,14 @@ export function Workspace({
   const locale = snapshot.preferences.locale;
   const has = cardAvailability(snapshot);
   const show = (available: boolean, tabs: readonly WorkspaceTab[]): boolean => available && on(tab, tabs);
+  const device = !gameProfile;
   const powerOverview = status.ui?.powerOverview === true;
 
   const performance = [
     show(has.dpi, ["performance"]) ? <DpiCard key="dpi" snapshot={snapshot} /> : null,
     show(has.polling, ["performance"]) ? <PollingCard key="polling" snapshot={snapshot} /> : null,
     show(has.sensor, ["performance"]) ? <SensorCard key="sensor" snapshot={snapshot} /> : null,
+    show(has.atkF1Sensor, ["performance"]) ? <AtkSensorCard key="atk-sensor" snapshot={snapshot} /> : null,
     show(has.lightforce, ["buttons"]) ? <LightforceCard key="lightforce" snapshot={snapshot} /> : null,
     show(has.ninjutsoSensor, ["performance"])
       ? <NinjutsoSensorCard key="ninjutso-sensor" snapshot={snapshot} /> : null,
@@ -444,7 +456,7 @@ export function Workspace({
   ].filter((node) => node !== null);
 
   const advanced = [
-    show(has.signal, ["advanced"]) ? <SignalCard key="signal" snapshot={snapshot} /> : null,
+    device && show(has.signal, ["advanced"]) ? <SignalCard key="signal" snapshot={snapshot} /> : null,
     !powerOverview && show(has.sleep, ["advanced"]) ? <SleepCard key="sleep" snapshot={snapshot} /> : null,
     show(has.lightingAdvanced, ["advanced"])
       ? <LightingCard key="lighting" snapshot={snapshot} variant="advanced" /> : null,
@@ -452,7 +464,8 @@ export function Workspace({
     show(has.finalmouse, ["advanced"]) ? <FinalmouseCard key="finalmouse" snapshot={snapshot} /> : null,
     show(has.incott, ["advanced"]) ? <IncottCard key="incott" snapshot={snapshot} /> : null,
     show(has.atkProfile, ["profiles"]) ? <AtkProfileCard key="atk-profile" snapshot={snapshot} /> : null,
-    show(has.atkReceiver, ["advanced"]) ? <AtkReceiverCard key="atk-receiver" snapshot={snapshot} /> : null,
+    device && show(has.atkReceiver, ["advanced"]) ? <AtkReceiverCard key="atk-receiver" snapshot={snapshot} /> : null,
+    show(has.atkF1Dongle, ["advanced"]) ? <AtkDongleCard key="atk-dongle" snapshot={snapshot} /> : null,
     show(has.onboardProfiles && !snapshot.traits.teevolution, ["profiles"])
       ? <OnboardProfileCard key="onboard-profile" snapshot={snapshot} /> : null,
     show(has.pulsarPro, ["profiles"]) ? <PulsarProCard key="pulsarpro" snapshot={snapshot} /> : null,
@@ -470,10 +483,10 @@ export function Workspace({
   const showTeevolutionProfiles = show(snapshot.traits.teevolution && has.onboardProfiles, ["profiles"]);
   const showNapeLayers = show(has.keychronNapeLayers, ["profiles"]);
   const showSuperstrike = show(has.superstrike, ["buttons"]);
-  const showLogitechDetails = show(has.logitechDetails, ["advanced"]);
+  const showLogitechDetails = device && show(has.logitechDetails, ["advanced"]);
   const showMxMaster = on(tab, ["advanced"])
     && (status.hapticIntensity != null || status.wheelMode != null || status.friendlyName != null || status.hostCount != null);
-  const showDiagnostics = on(tab, ["advanced"]);
+  const showDiagnostics = device && on(tab, ["advanced"]);
   const showOverview = on(tab, ["overview"]);
 
   const anyPanel = performance.length > 0 || advanced.length > 0 || lighting.length > 0
@@ -488,7 +501,7 @@ export function Workspace({
 
   return (
     <>
-      {showOverview ? <OverviewContent snapshot={snapshot} onRequestArtwork={onRequestArtwork} /> : null}
+      {showOverview ? <OverviewContent snapshot={snapshot} /> : null}
 
       {!anyPanel ? (
         <section id="workspace-tab-empty" className="workspace-tab-empty device-data" role="tabpanel">
@@ -516,9 +529,11 @@ export function Workspace({
           role="tabpanel"
           aria-label="Mouse settings"
         >
-          <aside className="performance-sidebar">
-            <DeviceShowcaseSidebar snapshot={snapshot} />
-          </aside>
+          {device ? (
+            <aside className="performance-sidebar">
+              <DeviceShowcaseSidebar snapshot={snapshot} />
+            </aside>
+          ) : null}
           <div className="performance-controls">
             {performance}
           </div>
@@ -558,7 +573,7 @@ export function Workspace({
         </section>
       ) : null}
 
-      {on(tab, ["advanced"]) ? (
+      {device && on(tab, ["advanced"]) ? (
         <aside className="testing-note" aria-label={t(locale, "misc.devTesting")}>
           <strong>{t(locale, "misc.devTesting")}</strong>
           <span>
@@ -612,6 +627,11 @@ function DeviceListView({ snapshot }: { snapshot: ControlSnapshot }): ReactNode 
                 }}
               >
                   <span className="device-tile-name">{device.name}</span>
+                  {device.transport === "bridge" ? (
+                    <span className="device-tile-transport" title="Connected through OpenMouse Bridge">
+                      Bridge
+                    </span>
+                  ) : null}
                   <div className="device-tile-stats" aria-label="Device status">
                     <span className="device-tile-stat">
                       <Wifi className="device-tile-stat-icon" strokeWidth={2} aria-hidden="true" />
@@ -670,12 +690,10 @@ export function OverviewPage({
   snapshot,
   onOpenCapture,
   onShareProfile,
-  onRequestArtwork,
 }: {
   snapshot: ControlSnapshot;
   onOpenCapture: () => void;
   onShareProfile: () => void;
-  onRequestArtwork: () => void;
 }): ReactNode {
   const status = snapshot.status;
   const panel = useRef<HTMLElement>(null);
@@ -764,7 +782,7 @@ export function OverviewPage({
             ) : null}
           </nav>
 
-          <Workspace snapshot={workspaceSnapshot} onOpenCapture={onOpenCapture} onShareProfile={onShareProfile} onRequestArtwork={onRequestArtwork} />
+          <Workspace snapshot={workspaceSnapshot} onOpenCapture={onOpenCapture} onShareProfile={onShareProfile} />
         </>
       ) : (
         <DeviceListView snapshot={snapshot} />

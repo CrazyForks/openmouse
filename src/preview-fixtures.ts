@@ -312,12 +312,19 @@ const RAZER: MouseStatus = {
     hideProcessingCard: true,
     forceShowBattery: true,
     defaultDisplayName: "Viper V3 Pro",
+    // The classic Razer driver publishes the stage table read-only (the
+    // `0x04`/`0x06` write is deliberately unverified), so the preview editor
+    // renders fixed and uneditable — the app's capabilities flags stay false
+    // because no client is connected in preview.
+    dpiStageEditor: { maxStages: 5, countEditable: false, minDpi: 100, maxDpi: 35000, stepDpi: 50 },
   },
   batteryPercent: 66,
   batteryState: "Discharging",
   dpi: 1600,
   dpiY: 1600,
   supportsSeparateDpiAxes: true,
+  dpiStages: [400, 800, 1600, 3200, 6400],
+  activeDpiStage: 2,
   pollingRateHz: 1000,
   supportedPollingRates: [125, 250, 500, 1000, 2000, 4000, 8000],
   activeProfile: 1,
@@ -508,7 +515,7 @@ const TEEVOLUTION: MouseStatus = {
 const VGN: MouseStatus = {
   brand: "VGN",
   name: "F2 Master Plus",
-  ui: { family: "vgn", hideUnsupportedPollingRates: true, forceShowBattery: true },
+  ui: { family: "vgn-f2", hideUnsupportedPollingRates: true, forceShowBattery: true },
   batteryPercent: 79,
   batteryState: "Discharging",
   dpi: 1600,
@@ -520,6 +527,15 @@ const VGN: MouseStatus = {
   motionSync: true,
   debounceMs: 4,
   sleepTimeout: 60,
+  buttonMappings: {
+    Left: "Left Click",
+    Right: "Right Click",
+    Middle: "Middle Click",
+    Back: "Backward",
+    Forward: "Forward",
+    DPI: "DPI Loop",
+  },
+  buttonOptions: ["Left Click", "Right Click", "Middle Click", "Backward", "Forward", "DPI Loop", "DPI+", "DPI-", "Disable"],
   firmware: ["1.2.0"],
 };
 

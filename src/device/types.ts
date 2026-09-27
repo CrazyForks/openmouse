@@ -43,6 +43,10 @@ export interface TeevolutionProfile {
 export interface DeviceCapabilities {
   canDisableSleep: boolean;
   angleTuningWritable: boolean;
+  /** Whether the connected driver can write DPI stage table values, or reports the table read-only. */
+  dpiStagesWritable: boolean;
+  /** Whether the connected driver can select which DPI stage is active. */
+  activeDpiStageWritable: boolean;
   sleepOptions: number[] | null;
   debounceMaxMs: number | null;
   debounceOptions?: number[] | null;
@@ -60,6 +64,9 @@ export interface SidebarDevice {
   vendorId: number;
   productId: number;
   kind: "mouse" | "keyboard";
+  /** "bridge" when this device was opened through OpenMouse Bridge's native
+   *  HID socket rather than the browser's own WebHID (see bridge-hid.ts). */
+  transport: "bridge" | "webhid";
 }
 
 export interface DiagnosticsView {
@@ -83,6 +90,8 @@ export interface AnalogTuning {
   actuation: number;
   rapidTrigger: number;
   haptics: number;
+  /** Rapid trigger on/off. Undefined when the mouse does not report it. */
+  rapidTriggerEnabled?: boolean;
 }
 
 export interface AnalogTuningState {
@@ -131,6 +140,12 @@ export interface Toast {
   kind: ToastKind;
   title: string;
   detail?: string;
+  action?: {
+    label: string;
+    href: string;
+  };
+  prominent?: boolean;
+  persistent?: boolean;
   leaving?: boolean;
 }
 
@@ -196,6 +211,8 @@ export interface ControlSnapshot {
   eggPollingDivider: number | null;
 
   pending: PendingView;
+  /** True while the Games page is editing a game profile: edits are staged into a draft that is never flashed. */
+  gameProfileDraft: boolean;
   diagnostics: DiagnosticsView;
   diagnosticsOpen: boolean;
   captureAvailable: boolean;

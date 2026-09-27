@@ -55,8 +55,23 @@ official PRO X SUPERLIGHT 2c product gallery. Confirm redistribution terms
 before including it in a public release package.
 
 `logitech-pro-x2-superstrike.png` was supplied from Logitech G's official
-PRO X2 SUPERSTRIKE product gallery. Confirm redistribution terms before
-including it in a public release package.
+PRO X2 SUPERSTRIKE product gallery
+(`resource.logitechg.com/.../pro-x2-superstrike-pdp/2026/pro-x2-superstrike-top-angle-lifestyle-gallery-2.png`,
+direct DAM file, transparent). Normalized to a 700×700 transparent canvas
+(~600 px mouse, centered) to match the G502 set. Replaces an earlier R2 entry
+that was a 16:9 lifestyle shot with an opaque green background. Confirm
+redistribution terms before including it in a public release package.
+
+`logitech-pro-x3-superstrike.png` was supplied from Logitech G's official
+PRO X3 SUPERSTRIKE product gallery
+(`resource.logitechg.com/.../pro-x3-superstrike-pdp/gallery/pro-x3-superstrike-mouse-midnight-black-top-angle-gallery-1.png`,
+direct DAM file, transparent, Midnight Black hero SKU to distinguish it from
+the white X2 render). Normalized to a 700×700 transparent canvas (~600 px
+mouse, centered) to match the G502 set. **Needs a maintainer upload** — the
+mapping in `src/ui/device-images.ts` keys on `superstrike` + `x 3` in the
+reported name (receiver `0x046d:0xc54f`, mouse-protocol #117) and falls back
+to a broken image until then. Confirm redistribution terms before including
+it in a public release package.
 
 The three `logitech-g502*.png` files were supplied from Lenovo, Logitech G,
 and MyXprs product-image URLs. They were normalized to matching 700×700
@@ -193,7 +208,7 @@ package:
 - `logitech-mx-anywhere-3.png` — Logitech MX Anywhere 3 top-view render
 - `logitech-mx-ergo-s.png` — Logitech MX Ergo S top-view render
 - `razer-deathadder-v2.png` — Razer DeathAdder V2 (V2 / V2 Pro / Essential share the shell)
-- `razer-deathadder-v3.png` — Razer DeathAdder V3 render
+- `razer-deathadder-v3.png` — Razer DeathAdder V3 render (V3 Pro shares the shell)
 - `razer-deathadder-v4-pro.png` — Razer DeathAdder V4 Pro (Carbon Fiber SKU shares the shell)
 - `razer-viper-v3-hyperspeed.png` — Razer Viper V3 HyperSpeed render
 - `razer-viper-v4-pro.png` — Razer Viper V4 Pro render

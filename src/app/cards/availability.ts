@@ -29,6 +29,8 @@ export interface CardAvailability {
   atkButtons: boolean;
   atkProfile: boolean;
   atkReceiver: boolean;
+  atkF1Sensor: boolean;
+  atkF1Dongle: boolean;
   mxMasterButtons: boolean;
   pulsarPro: boolean;
   onboardProfiles: boolean;
@@ -67,6 +69,8 @@ const NOTHING: CardAvailability = {
   atkButtons: false,
   atkProfile: false,
   atkReceiver: false,
+  atkF1Sensor: false,
+  atkF1Dongle: false,
   mxMasterButtons: false,
   pulsarPro: false,
   onboardProfiles: false,
@@ -128,7 +132,10 @@ export function cardAvailability(snapshot: ControlSnapshot): CardAvailability {
     lighting: Boolean(status.lighting || status.lightingZones?.length),
     lightingAdvanced: host && Boolean(status.lighting || status.lightingZones?.length),
     onboardProfiles: (status.profileCount ?? 0) > 1 && status.activeProfile != null,
-    buttonMapping: host && Boolean(status.buttonMappings) && Boolean(status.buttonOptions?.length),
+    // Not gated on `host`: a driver publishes both fields only when it can
+    // write them, which is opt-in enough. VGN F2 and G-Wolves remap buttons
+    // but have no other advanced controls to open that section for.
+    buttonMapping: Boolean(status.buttonMappings) && Boolean(status.buttonOptions?.length),
     powerMode: host && Boolean(status.powerModes?.length),
     profiles: traits.logitech
       && status.deviceMode !== undefined && status.deviceMode !== "Unknown",
@@ -173,6 +180,10 @@ export function cardAvailability(snapshot: ControlSnapshot): CardAvailability {
     atkButtons: (status.atkButtonMappings?.length ?? 0) > 0,
     atkProfile: status.atkProfileCount !== undefined && status.activeProfile !== null,
     atkReceiver: status.atkReceiver !== undefined,
+    atkF1Sensor: status.atkSensorMode != null,
+    // Write-only with no read command: gate on F1 presence and default the
+    // selector to Battery (vendor default) until the first write lands.
+    atkF1Dongle: status.atkSensorMode != null,
     mxMasterButtons: traits.logitech && (snapshot.buttons?.length ?? 0) > 0,
     pulsarPro: host && isPulsarProProtocol(status),
   };
