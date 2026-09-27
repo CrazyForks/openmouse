@@ -18,7 +18,7 @@
 // socket. Safari does not, and blocks it as mixed content — Safari needs
 // Bridge to serve the app itself over loopback, which is a separate change.
 
-import { SUPPORTED_HID_FILTERS } from "@openmouse/protocol/drivers/vendors";
+import { HID_FILTERS } from "./device/hid-filters.ts";
 import { describeHidDevice, markHidActivity } from "./hid-diagnostics.ts";
 
 
@@ -444,7 +444,7 @@ class BridgeHid implements HID {
   }
 
   async #listDevices(): Promise<HIDDevice[]> {
-    const reply = await this.#client.request({ type: "list", vendorIds: vendorIdsFor(SUPPORTED_HID_FILTERS) });
+    const reply = await this.#client.request({ type: "list", vendorIds: vendorIdsFor(HID_FILTERS) });
     const { devices, added, removed } = this.#client.reconcile(reply.devices ?? []);
     if (this.#enumerated) {
       for (const device of added) this.#emit("connect", device);

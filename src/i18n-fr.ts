@@ -678,6 +678,7 @@ export const fr: Record<I18nKey, string> = {
   "ctl.reconnecting": "Reconnexion",
   "ctl.readingPrev": "Lecture de l'appareil précédemment autorisé.",
   "ctl.useAdd": "Utilisez Ajouter un appareil si la souris ne se reconnecte pas automatiquement.",
+  "ctl.razerBluetooth": "La Basilisk V3 Pro ne peut pas encore être configurée en Bluetooth. Passez-la en HyperSpeed (2,4 GHz) avec le dongle, ou branchez le câble.",
   "ctl.couldNotReconnect": "Impossible de reconnecter la souris",
   "ctl.dpiUnsupported": "Cette valeur DPI n'est pas prise en charge par cette souris.",
   "ctl.closestStep": "Cette souris ne peut pas faire {dpi} DPI. Le pas le plus proche pris en charge est {closest}.",

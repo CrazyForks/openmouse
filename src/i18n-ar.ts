@@ -677,6 +677,7 @@ export const ar: Record<I18nKey, string> = {
   "ctl.reconnecting": "جارٍ إعادة الاتصال",
   "ctl.readingPrev": "جارٍ قراءة الجهاز المصرّح به سابقًا.",
   "ctl.useAdd": "استخدم «إضافة جهاز» إن لم يُعد الماوس الاتصال تلقائيًا.",
+  "ctl.razerBluetooth": "لا يمكن ضبط Basilisk V3 Pro عبر البلوتوث بعد. حوّله إلى HyperSpeed (2.4 GHz) مع الدونجل، أو وصّل الكابل.",
   "ctl.couldNotReconnect": "تعذّرت إعادة اتصال الماوس",
   "ctl.dpiUnsupported": "قيمة DPI هذه غير مدعومة من هذا الماوس.",
   "ctl.closestStep": "لا يستطيع هذا الماوس تنفيذ {dpi} DPI. أقرب خطوة يدعمها هي {closest}.",
