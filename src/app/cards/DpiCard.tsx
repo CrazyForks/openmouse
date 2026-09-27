@@ -210,6 +210,11 @@ function DpiStageEditor({
   const setSlider = (index: number, numeric: number): void => setValue(index, String(numeric));
 
   const setActive = (index: number): void => {
+    // In the single-DPI view the row number picks that preset, like its tickbox.
+    if (mode === "generic") {
+      if (!rows[index].enabled) setEnabled(index, true);
+      return;
+    }
     if (!rows[index].enabled) return;
     if (mode === "logitech") {
       control.setDpiSlotDefault(compactIndex(index));
@@ -287,7 +292,7 @@ function DpiStageEditor({
                   className="dpi-editor-tick"
                   aria-label={tp(locale, "dpi.stageToggle", { n: index + 1 })}
                   checked={row.enabled}
-                  disabled={locked || fixedStageCount || !stagesWritable}
+                  disabled={locked || fixedStageCount || (mode === "stage" && !stagesWritable)}
                   onChange={() => setEnabled(index, !row.enabled)}
                 />
                 <span className="dpi-editor-box" aria-hidden="true"><Check size={12} strokeWidth={3.2} /></span>
@@ -295,7 +300,7 @@ function DpiStageEditor({
               <button
                 type="button"
                 className="dpi-editor-index"
-                disabled={locked || !row.enabled || (mode === "stage" && !activeWritable)}
+                disabled={locked || (mode !== "generic" && !row.enabled) || (mode === "stage" && !activeWritable)}
                 title={rowTitle}
                 aria-pressed={highlighted}
                 onClick={() => setActive(index)}
