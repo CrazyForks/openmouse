@@ -2674,6 +2674,25 @@ export function applyLogitechAxisDpi(dpiX: number, dpiY: number): void {
   });
 }
 
+/**
+ * Live HITS press depth per button, 0 to 10. The mouse only streams it while
+ * armed (see startAnalogPressStream), and stays silent otherwise even for a
+ * hardware press. Nothing arrives when no Logitech mouse is connected.
+ */
+export function subscribeAnalogPress(listener: (left: number, right: number) => void): () => void {
+  return logitechClient()?.onAnalogPress(listener) ?? (() => {});
+}
+
+/** Arms the live press-depth stream. Call while the HITS card with the meter is shown. */
+export function startAnalogPressStream(): void {
+  void logitechClient()?.startAnalogPressStream();
+}
+
+/** Disarms the stream. Call when the card showing the meter goes away. */
+export function stopAnalogPressStream(): void {
+  void logitechClient()?.stopAnalogPressStream();
+}
+
 export function setAnalogTuningMode(mode: "independent" | "both"): void {
   analogTuning = { ...analogTuning, mode };
   emit();
@@ -2688,10 +2707,38 @@ export function setAnalogTuningValue(
   emit();
 }
 
+/**
+ * Both buttons' HITS changes share one writer, so a Both-buttons apply is one
+ * profile write instead of two: the runner calls only the last change of a group.
+ */
+const ANALOG_BUTTON_GROUP = "logitech-analog-buttons";
+/** The values waiting to be written, by button. */
+const stagedAnalogButtons = new Map<0 | 1, AnalogTuning>();
+
+async function writeStagedAnalogButtons(): Promise<void> {
+  const client = logitechClient();
+  if (!client) throw new Error(st("ctl.gone"));
+  const staged = ([0, 1] as const).flatMap((button) => {
+    const tuning = stagedAnalogButtons.get(button);
+    return tuning && isPendingChange(`analog-button-${button}`) ? [{ button, ...tuning }] : [];
+  });
+  // Live first, so it takes effect at once.
+  for (const entry of staged) await client.setAnalogButtonTuning(entry.button, entry);
+  // Then the profile, which is what the mouse loads at power-on. Live values
+  // alone are gone after a power cycle. Host mode and profiles that cannot be
+  // written keep the live-only behavior.
+  if (lastDeviceMode === "Onboard" && lastProfileFormat?.writable === true) {
+    await client.persistAnalogButtonTuning(staged);
+  }
+  stagedAnalogButtons.clear();
+}
+
 function stageAnalogButton(button: 0 | 1, tuning: AnalogTuning): void {
   const side = button === 0 ? "left" : "right";
+  stagedAnalogButtons.set(button, { ...tuning });
   stageChange({
     key: `analog-button-${button}`,
+    group: ANALOG_BUTTON_GROUP,
     label: `${side === "left" ? "Left" : "Right"} HITS tuning`,
     command: `Set ${side} hall-effect button tuning`,
     progress: `Setting ${side} hall-effect button tuning…`,
@@ -2699,11 +2746,7 @@ function stageAnalogButton(button: 0 | 1, tuning: AnalogTuning): void {
       const buttons = status.analogButtonTuning?.buttons;
       if (buttons?.[button]) buttons[button] = { ...tuning };
     },
-    apply: async () => {
-      const client = logitechClient();
-      if (!client) throw new Error(st("ctl.gone"));
-      await client.setAnalogButtonTuning(button, tuning);
-    },
+    apply: writeStagedAnalogButtons,
   });
 }
 
