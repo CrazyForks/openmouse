@@ -1,5 +1,5 @@
 import type { MouseLighting, MouseStatus } from "@openmouse/protocol/drivers/mouse-types";
-import { PREVIEW_KEYS, type FixturePreviewMode } from "./preview-modes";
+import { PREVIEW_KEYS, type FixturePreviewMode } from "./preview-modes.ts";
 
 export { PREVIEW_KEYS };
 
@@ -281,6 +281,41 @@ const ATK: MouseStatus = {
   firmware: ["1.0.0"],
 };
 
+const ATK_F1: MouseStatus = {
+  brand: "ATK",
+  name: "ATK F1 Ultimate 2.0",
+  ui: { family: "atk", hideUnsupportedPollingRates: true, forceShowBattery: true },
+  batteryPercent: 100,
+  batteryState: "Discharging",
+  dpi: 1600,
+  dpiY: 1600,
+  dpiStages: [1600],
+  activeDpiStage: 0,
+  pollingRateHz: 1000,
+  supportedPollingRates: [125, 250, 500, 1000, 2000, 4000, 8000],
+  activeProfile: null,
+  liftOffDistance: "Medium",
+  liftOffScale: {
+    value: 4, min: 1, max: 11, millimetres: 1, minMillimetres: 0.7, maxMillimetres: 1.7,
+  },
+  connectionType: "Wireless",
+  connectionDetail: "2.4 GHz receiver",
+  motionSync: true,
+  angleSnapping: false,
+  rippleControl: false,
+  // Reported by the angle register (centered); gates the Sensor rotation row.
+  angleTuning: 0,
+  debounceMs: 1,
+  sleepTimeout: 1800,
+  atkSensorMode: 1,
+  // Live hardware was reverted to OFF (0) after validation; 100 keeps the
+  // anti-mistouch slider in its enabled state for widget review.
+  atkAntiMistouchMs: 100,
+  // Write-only on hardware (mirrors last write); 2 = Battery Gradient, the live baseline.
+  atkDongleLight: 2,
+  firmware: ["Mouse 3.03"],
+};
+
 const ORBITAL: MouseStatus = {
   brand: "Orbital",
   name: "Orbital One",
@@ -515,7 +550,7 @@ const TEEVOLUTION: MouseStatus = {
 const VGN: MouseStatus = {
   brand: "VGN",
   name: "F2 Master Plus",
-  ui: { family: "vgn", hideUnsupportedPollingRates: true, forceShowBattery: true },
+  ui: { family: "vgn-f2", hideUnsupportedPollingRates: true, forceShowBattery: true },
   batteryPercent: 79,
   batteryState: "Discharging",
   dpi: 1600,
@@ -527,6 +562,15 @@ const VGN: MouseStatus = {
   motionSync: true,
   debounceMs: 4,
   sleepTimeout: 60,
+  buttonMappings: {
+    Left: "Left Click",
+    Right: "Right Click",
+    Middle: "Middle Click",
+    Back: "Backward",
+    Forward: "Forward",
+    DPI: "DPI Loop",
+  },
+  buttonOptions: ["Left Click", "Right Click", "Middle Click", "Backward", "Forward", "DPI Loop", "DPI+", "DPI-", "Disable"],
   firmware: ["1.2.0"],
 };
 
@@ -754,6 +798,7 @@ export const PREVIEW_FIXTURES: Record<FixturePreviewMode, PreviewFixture> = {
   crdrako: { label: "CRDRAKO KO-ONE", status: CRDRAKO },
   m3k: { label: "Zaunkoenig M3K", status: M3K },
   atk: { label: "ATK A9 Ultra", status: ATK },
+  "atk-f1": { label: "ATK F1 Ultimate 2.0", status: ATK_F1 },
   orbital: { label: "Orbital One", status: ORBITAL },
   razer: { label: "Razer Viper V3 Pro", status: RAZER },
   "razer-viper-v2": { label: "Razer Viper V2 Pro", status: RAZER_VIPER_V2 },
