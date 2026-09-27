@@ -678,6 +678,7 @@ export const pt: Record<I18nKey, string> = {
   "ctl.reconnecting": "Reconectando",
   "ctl.readingPrev": "Lendo o dispositivo autorizado anterior.",
   "ctl.useAdd": "Use Adicionar dispositivo se o mouse não reconectar sozinho.",
+  "ctl.razerBluetooth": "O Basilisk V3 Pro ainda não pode ser configurado por Bluetooth. Mude-o para HyperSpeed (2,4 GHz) com o dongle ou conecte o cabo.",
   "ctl.couldNotReconnect": "Não foi possível reconectar o mouse",
   "ctl.dpiUnsupported": "Este valor de DPI não é suportado por este mouse.",
   "ctl.closestStep": "Este mouse não faz {dpi} DPI. O passo mais próximo é {closest}.",

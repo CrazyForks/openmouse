@@ -626,6 +626,7 @@ export const vi: Record<I18nKey, string> = {
   "ctl.reconnecting": "Đang kết nối lại",
   "ctl.readingPrev": "Đang đọc thiết bị đã được cấp quyền trước đó.",
   "ctl.useAdd": "Dùng Thêm thiết bị nếu chuột không tự động kết nối lại.",
+  "ctl.razerBluetooth": "Basilisk V3 Pro chưa thể cài đặt qua Bluetooth. Hãy chuyển sang HyperSpeed (2,4 GHz) với dongle hoặc cắm cáp.",
   "ctl.couldNotReconnect": "Không thể kết nối lại với chuột",
   "ctl.dpiUnsupported": "Giá trị DPI đó không được chuột này hỗ trợ.",
   "ctl.closestStep": "Chuột này không hỗ trợ {dpi} DPI. Mức gần nhất được hỗ trợ là {closest}.",

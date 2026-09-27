@@ -677,6 +677,7 @@ export const ru: Record<I18nKey, string> = {
   "ctl.reconnecting": "Переподключение",
   "ctl.readingPrev": "Читаю ранее разрешённое устройство.",
   "ctl.useAdd": "Нажмите «Добавить устройство», если мышь не подключилась сама.",
+  "ctl.razerBluetooth": "Basilisk V3 Pro пока нельзя настроить по Bluetooth. Переключите мышь в режим HyperSpeed (2,4 ГГц) с донглом или подключите кабель.",
   "ctl.couldNotReconnect": "Не удалось переподключить мышь",
   "ctl.dpiUnsupported": "Это значение DPI не поддерживается данной мышью.",
   "ctl.closestStep": "Эта мышь не умеет {dpi} DPI. Ближайший поддерживаемый шаг — {closest}.",
