@@ -2688,10 +2688,38 @@ export function setAnalogTuningValue(
   emit();
 }
 
+/**
+ * Both buttons' HITS changes share one writer, so a Both-buttons apply is one
+ * profile write instead of two: the runner calls only the last change of a group.
+ */
+const ANALOG_BUTTON_GROUP = "logitech-analog-buttons";
+/** The values waiting to be written, by button. */
+const stagedAnalogButtons = new Map<0 | 1, AnalogTuning>();
+
+async function writeStagedAnalogButtons(): Promise<void> {
+  const client = logitechClient();
+  if (!client) throw new Error(st("ctl.gone"));
+  const staged = ([0, 1] as const).flatMap((button) => {
+    const tuning = stagedAnalogButtons.get(button);
+    return tuning && isPendingChange(`analog-button-${button}`) ? [{ button, ...tuning }] : [];
+  });
+  // Live first, so it takes effect at once.
+  for (const entry of staged) await client.setAnalogButtonTuning(entry.button, entry);
+  // Then the profile, which is what the mouse loads at power-on. Live values
+  // alone are gone after a power cycle. Host mode and profiles that cannot be
+  // written keep the live-only behavior.
+  if (lastDeviceMode === "Onboard" && lastProfileFormat?.writable === true) {
+    await client.persistAnalogButtonTuning(staged);
+  }
+  stagedAnalogButtons.clear();
+}
+
 function stageAnalogButton(button: 0 | 1, tuning: AnalogTuning): void {
   const side = button === 0 ? "left" : "right";
+  stagedAnalogButtons.set(button, { ...tuning });
   stageChange({
     key: `analog-button-${button}`,
+    group: ANALOG_BUTTON_GROUP,
     label: `${side === "left" ? "Left" : "Right"} HITS tuning`,
     command: `Set ${side} hall-effect button tuning`,
     progress: `Setting ${side} hall-effect button tuning…`,
@@ -2699,11 +2727,7 @@ function stageAnalogButton(button: 0 | 1, tuning: AnalogTuning): void {
       const buttons = status.analogButtonTuning?.buttons;
       if (buttons?.[button]) buttons[button] = { ...tuning };
     },
-    apply: async () => {
-      const client = logitechClient();
-      if (!client) throw new Error(st("ctl.gone"));
-      await client.setAnalogButtonTuning(button, tuning);
-    },
+    apply: writeStagedAnalogButtons,
   });
 }
 
