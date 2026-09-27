@@ -59,6 +59,11 @@
 #logitech-analog-button-settings .superstrike-steps > div { display: grid; grid-template-columns: repeat(auto-fit, minmax(1.45rem, 1fr)); gap: .22rem; }
 #logitech-analog-button-settings .superstrike-steps button { min-width: 0; padding: .34rem .12rem; border: 1px solid var(--border); border-radius: 5px; background: var(--input); color: var(--text-soft); font: 650 .59rem var(--font-mono); }
 #logitech-analog-button-settings .superstrike-steps button:hover { border-color: var(--ghost); color: var(--text-hover); }
+#logitech-analog-button-settings .superstrike-steps button:disabled { opacity: .4; cursor: not-allowed; }
+#logitech-analog-button-settings .superstrike-rapid-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; min-width: 0; }
+#logitech-analog-button-settings .superstrike-rapid-controls .superstrike-switch { flex: 0 0 auto; }
+#logitech-analog-button-settings .superstrike-rapid-controls .superstrike-switch > div { grid-template-columns: repeat(2, 2.7rem); }
+#logitech-analog-button-settings .superstrike-rapid-controls > .superstrike-steps:not(.superstrike-switch) { flex: 1 1 8rem; min-width: 0; }
 #logitech-analog-button-settings .superstrike-steps button[aria-pressed="true"] { border-color: var(--ui-accent); background: var(--ui-accent); color: var(--ui-accent-ink); }
 #logitech-analog-button-settings .superstrike-apply-button { width: 100%; margin-top: .7rem; padding: .48rem .62rem; border: 1px solid color-mix(in srgb, var(--ui-accent) 62%, var(--border)); border-radius: 6px; background: var(--ui-accent-soft); color: var(--ui-accent); font-size: .62rem; font-weight: 750; transition: border-color .18s ease, background .18s ease, transform .18s ease; }
 #logitech-analog-button-settings .superstrike-apply-button:hover { border-color: var(--ui-accent); background: var(--ui-accent); color: var(--ui-accent-ink); transform: translateY(-1px); }

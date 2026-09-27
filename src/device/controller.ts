@@ -84,6 +84,7 @@ import {
   clampDpi,
   describeOffset,
   dpiStageCapabilitiesForOptions,
+  reportRateCapabilitiesFor,
   reportRatesForDevice,
   validateProfileName,
   reproduceProfile,
@@ -391,7 +392,9 @@ export function getActiveDevice(): HIDDevice | null {
 
 function buildProfileView(): ProfileView {
   const entry = editedProfileEntry();
-  const rates = lastProfileFormat ? capabilitiesForFormat(lastProfileFormat.id).reportRates : null;
+  const rates = lastProfileFormat
+    ? reportRateCapabilitiesFor(lastProfileFormat.id, latestDeviceStatus?.transportIds?.USB)
+    : null;
   return {
     entry,
     summary: describeProfileEntry(entry),
@@ -2679,7 +2682,7 @@ export function setAnalogTuningMode(mode: "independent" | "both"): void {
 export function setAnalogTuningValue(
   group: "left" | "right" | "both",
   setting: keyof AnalogTuning,
-  value: number,
+  value: number | boolean,
 ): void {
   analogTuning = { ...analogTuning, [group]: { ...analogTuning[group], [setting]: value } };
   emit();
@@ -3569,7 +3572,7 @@ export { BUNNY_HOP_LIMITS };
 
 export function profileReportRateOptions(link: "wireless" | "wired"): number[] {
   const format = lastProfileFormat;
-  const rates = format ? capabilitiesForFormat(format.id).reportRates : null;
+  const rates = format ? reportRateCapabilitiesFor(format.id, latestDeviceStatus?.transportIds?.USB) : null;
   const activeLink = latestDeviceStatus?.connectionType === "Wireless" ? "wireless" : "wired";
   return reportRatesForDevice(
     rates,
@@ -4554,8 +4557,8 @@ function showSuperstrikePreview(): void {
       maxRapidTrigger: 5,
       maxHaptics: 5,
       buttons: [
-        { actuation: 3, rapidTrigger: 2, haptics: 3 },
-        { actuation: 3, rapidTrigger: 2, haptics: 3 },
+        { actuation: 3, rapidTrigger: 2, haptics: 3, rapidTriggerEnabled: true },
+        { actuation: 3, rapidTrigger: 2, haptics: 3, rapidTriggerEnabled: true },
       ],
     },
     pollingRateHz: 4000,
