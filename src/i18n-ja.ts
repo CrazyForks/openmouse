@@ -458,6 +458,7 @@ export const ja: Record<I18nKey, string> = {
   "adv.filters": "フィルター",
   "adv.slamclickFilter": "スラムクリックフィルター",
   "adv.jitterFilter": "モーションジッターフィルター",
+  "adv.glassMode": "センサーガラスモード",
   "adv.gxMode": "GXスイッチモード",
   "adv.leftButton": "左ボタン",
   "adv.rightButton": "右ボタン",

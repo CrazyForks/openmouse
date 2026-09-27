@@ -406,6 +406,7 @@ export const vi: Record<I18nKey, string> = {
   "adv.filters": "Bộ lọc",
   "adv.slamclickFilter": "Bộ lọc Slamclick",
   "adv.jitterFilter": "Bộ lọc rung chuyển động",
+  "adv.glassMode": "Chế độ kính cảm biến",
   "adv.gxMode": "Chế độ switch GX",
   "adv.leftButton": "Nút trái",
   "adv.rightButton": "Nút phải",

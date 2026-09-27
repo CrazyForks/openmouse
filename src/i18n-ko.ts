@@ -458,6 +458,7 @@ export const ko: Record<I18nKey, string> = {
   "adv.filters": "필터",
   "adv.slamclickFilter": "슬램클릭 필터",
   "adv.jitterFilter": "모션 지터 필터",
+  "adv.glassMode": "센서 글래스 모드",
   "adv.gxMode": "GX 스위치 모드",
   "adv.leftButton": "왼쪽 버튼",
   "adv.rightButton": "오른쪽 버튼",

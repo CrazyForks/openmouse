@@ -458,6 +458,7 @@ export const zh: Record<I18nKey, string> = {
   "adv.filters": "滤波器",
   "adv.slamclickFilter": "误触点击滤波器",
   "adv.jitterFilter": "运动抖动滤波器",
+  "adv.glassMode": "传感器玻璃模式",
   "adv.gxMode": "GX 开关模式",
   "adv.leftButton": "左键",
   "adv.rightButton": "右键",

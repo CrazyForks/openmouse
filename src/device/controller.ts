@@ -4262,6 +4262,18 @@ export function applyEggPollingDivider(divider: number): void {
   });
 }
 
+export function applyEggGlassMode(enabled: boolean): void {
+  stageEggChange({
+    key: "egg-glass-mode",
+    label: `Glass mode ${enabled ? "on" : "off"}`,
+    what: "glass mode",
+    preview: (status) => {
+      status.eggGlassMode = enabled;
+    },
+    change: async (client) => client.setGlassMode(enabled),
+  });
+}
+
 export function applyEggMulticlick(button: EggButtonIndex, value: number): void {
   stageEggChange({
     key: `egg-multiclick-${button}`,

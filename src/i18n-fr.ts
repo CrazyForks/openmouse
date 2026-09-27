@@ -458,6 +458,7 @@ export const fr: Record<I18nKey, string> = {
   "adv.filters": "Filtres",
   "adv.slamclickFilter": "Filtre slamclick",
   "adv.jitterFilter": "Filtre de vibration de mouvement",
+  "adv.glassMode": "Mode verre du capteur",
   "adv.gxMode": "Mode switch GX",
   "adv.leftButton": "Bouton gauche",
   "adv.rightButton": "Bouton droit",

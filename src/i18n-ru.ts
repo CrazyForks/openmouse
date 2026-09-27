@@ -457,6 +457,7 @@ export const ru: Record<I18nKey, string> = {
   "adv.filters": "Фильтры",
   "adv.slamclickFilter": "Фильтр Slamclick",
   "adv.jitterFilter": "Фильтр дрожания",
+  "adv.glassMode": "Режим сенсора для стекла",
   "adv.gxMode": "Режим переключателей GX",
   "adv.leftButton": "Левая кнопка",
   "adv.rightButton": "Правая кнопка",

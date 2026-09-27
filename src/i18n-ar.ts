@@ -457,6 +457,7 @@ export const ar: Record<I18nKey, string> = {
   "adv.filters": "المرشحات",
   "adv.slamclickFilter": "مرشح Slamclick",
   "adv.jitterFilter": "مرشح اهتزاز الحركة",
+  "adv.glassMode": "وضع الزجاج للمستشعر",
   "adv.gxMode": "وضع مفتاح GX",
   "adv.leftButton": "الزر الأيسر",
   "adv.rightButton": "الزر الأيمن",
