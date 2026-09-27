@@ -160,7 +160,8 @@ export function cardAvailability(snapshot: ControlSnapshot): CardAvailability {
       && (status.incottFireKeyTimes != null || status.incottReceiverLedMode != null),
     eggFilter: eggs,
     eggSpdt: eggs,
-    eggPolling: eggs && snapshot.preferences.showExperimental,
+    // The 4K v2 reports no divider: its polling byte is a vendor enum.
+    eggPolling: eggs && snapshot.preferences.showExperimental && status.eggPollingDivider != null,
     eggCpi: eggs,
     eggButtons: eggs
       && status.eggMulticlickFilters !== undefined && status.eggButtonMappings !== undefined,
