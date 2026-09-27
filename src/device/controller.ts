@@ -137,6 +137,7 @@ import { teevolutionProfileForCid } from "@openmouse/protocol/teevolution";
 import { VgnF2HidClient } from "@openmouse/protocol/drivers/vgn/hid";
 import { KeychronNapeHidClient } from "@openmouse/protocol/drivers/keychron/nape-hid";
 import { KeychronM6HidClient } from "@openmouse/protocol/drivers/keychron/m6-hid";
+import { Keychron4kHidClient } from "@openmouse/protocol/drivers/keychron/mouse-4k-hid";
 import type { GloriousLighting } from "@openmouse/protocol/glorious";
 import { GloriousHidClient } from "@openmouse/protocol/drivers/glorious/hid";
 import { GloriousClassicHidClient } from "@openmouse/protocol/drivers/glorious/classic-hid";
@@ -260,6 +261,7 @@ const orbitalClient = (): OrbitalHidClient | null => activeAs(OrbitalHidClient);
 const vgnClient = (): VgnF2HidClient | null => activeAs(VgnF2HidClient);
 const keychronNapeClient = (): KeychronNapeHidClient | null => activeAs(KeychronNapeHidClient);
 const keychronM6Client = (): KeychronM6HidClient | null => activeAs(KeychronM6HidClient);
+const keychron4kClient = (): Keychron4kHidClient | null => activeAs(Keychron4kHidClient);
 const wallhackMouseClient = (): WallhackMouseHidClient | null => activeAs(WallhackMouseHidClient);
 const incottClient = (): IncottHidClient | null => activeAs(IncottHidClient);
 /** Pulsar is the only family with the collection-explorer onboarding path. */
@@ -3800,7 +3802,7 @@ export function applyPulsarValue(setting: "debounce" | "sleep", value: number): 
   const client = setting === "sleep"
     ? activeSettingsClient()
     : pulsarClient() ?? dmClient() ?? orbitalClient() ?? razerClient()
-      ?? viperClient() ?? teevolutionClient() ?? vgnClient() ?? keychronNapeClient() ?? keychronM6Client() ?? wallhackMouseClient()
+      ?? viperClient() ?? teevolutionClient() ?? vgnClient() ?? keychronNapeClient() ?? keychronM6Client() ?? keychron4kClient() ?? wallhackMouseClient()
       ?? incottClient();
   if (!client || (setting === "sleep" && !("setSleepTimeout" in client))) return;
   const asleep = value !== WLMOUSE_SLEEP_NEVER;
