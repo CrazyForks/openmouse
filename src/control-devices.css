@@ -94,3 +94,10 @@
   #egg-button-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
+#logitech-analog-button-settings .superstrike-press-meters { display: grid; gap: .35rem; margin: .2rem 0 .8rem; }
+#logitech-analog-button-settings .superstrike-press-meter { display: grid; grid-template-columns: 2.6rem 1fr; align-items: center; gap: .6rem; font: 650 .62rem var(--font-mono); color: var(--text-soft); }
+#logitech-analog-button-settings .superstrike-press-meter > div { display: grid; grid-template-columns: repeat(10, 1fr); gap: .2rem; }
+#logitech-analog-button-settings .superstrike-press-meter i { height: .55rem; border-radius: 2px; background: var(--input); border: 1px solid var(--border); }
+#logitech-analog-button-settings .superstrike-press-meter i[data-on="true"] { background: var(--accent, #2f8cff); border-color: transparent; }
+#logitech-analog-button-settings .superstrike-press-meter i[data-actuation="true"] { border-color: var(--warning); border-width: 2px; }
+#logitech-analog-button-settings .superstrike-press-meter i[data-actuation="true"][data-on="true"] { background: var(--warning); }

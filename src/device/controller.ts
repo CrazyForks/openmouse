@@ -2674,6 +2674,25 @@ export function applyLogitechAxisDpi(dpiX: number, dpiY: number): void {
   });
 }
 
+/**
+ * Live HITS press depth per button, 0 to 10. The mouse only streams it while
+ * armed (see startAnalogPressStream), and stays silent otherwise even for a
+ * hardware press. Nothing arrives when no Logitech mouse is connected.
+ */
+export function subscribeAnalogPress(listener: (left: number, right: number) => void): () => void {
+  return logitechClient()?.onAnalogPress(listener) ?? (() => {});
+}
+
+/** Arms the live press-depth stream. Call while the HITS card with the meter is shown. */
+export function startAnalogPressStream(): void {
+  void logitechClient()?.startAnalogPressStream();
+}
+
+/** Disarms the stream. Call when the card showing the meter goes away. */
+export function stopAnalogPressStream(): void {
+  void logitechClient()?.stopAnalogPressStream();
+}
+
 export function setAnalogTuningMode(mode: "independent" | "both"): void {
   analogTuning = { ...analogTuning, mode };
   emit();
