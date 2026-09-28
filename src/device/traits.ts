@@ -78,6 +78,9 @@ const BY_FAMILY: Readonly<Record<string, Partial<DriverTraits>>> = {
   // from ui.showAdvancedSection, but sleep/debounce still need the flags
   // here or the cards never render regardless of applyPulsarValue's list).
   incott: { advancedSection: true, sleep: true, debounce: true },
+  // The G-Wolves XVI generation (HTX Mini 8K) publishes its own sleep list
+  // and reads its before-press debounce; no signal-strength command exists.
+  "gwolves-xvi": { advancedSection: true, sleep: true, debounce: true },
   // HyperX publishes DPI, polling rate and lift-off in the settings grid only;
   // no signal, sleep or debounce card exists, and the processing card is
   // deliberately hidden, so no advanced-section flags are needed.

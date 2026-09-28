@@ -273,6 +273,9 @@ test("pickFlashLiftOffTarget prefers Medium, falling back to Low", () => {
   assert.equal(pickFlashLiftOffTarget("High"), "Medium");
   assert.equal(pickFlashLiftOffTarget("Medium"), "Low");
   assert.equal(pickFlashLiftOffTarget(null), null);
+  assert.equal(pickFlashLiftOffTarget("Low", ["Low", "High"]), "High");
+  assert.equal(pickFlashLiftOffTarget("High", ["Low", "High"]), "Low");
+  assert.equal(pickFlashLiftOffTarget("Low", ["Low"]), null);
 });
 
 test("flashWriteResult scores the round-trip legs — DPI, poll rate, lift-off", () => {
