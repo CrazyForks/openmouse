@@ -44,6 +44,7 @@ import {
   OnboardProfileCard,
   PulsarProCard,
   SignalCard,
+  DongleLedCard,
   SleepCard,
   DpiLightingCard,
 } from "./cards/AdvancedCards";
@@ -463,6 +464,7 @@ export function Workspace({
     show(has.lowPower, ["advanced"]) ? <LowPowerCard key="lowpower" snapshot={snapshot} /> : null,
     show(has.finalmouse, ["advanced"]) ? <FinalmouseCard key="finalmouse" snapshot={snapshot} /> : null,
     show(has.incott, ["advanced"]) ? <IncottCard key="incott" snapshot={snapshot} /> : null,
+    device && show(has.dongleLed, ["advanced"]) ? <DongleLedCard key="dongle-led" snapshot={snapshot} /> : null,
     show(has.atkProfile, ["profiles"]) ? <AtkProfileCard key="atk-profile" snapshot={snapshot} /> : null,
     device && show(has.atkReceiver, ["advanced"]) ? <AtkReceiverCard key="atk-receiver" snapshot={snapshot} /> : null,
     show(has.atkF1Dongle, ["advanced"]) ? <AtkDongleCard key="atk-dongle" snapshot={snapshot} /> : null,

@@ -134,6 +134,26 @@ export function SignalCard({ snapshot }: { snapshot: ControlSnapshot }): ReactNo
   );
 }
 
+export function DongleLedCard({ snapshot }: { snapshot: ControlSnapshot }): ReactNode {
+  const status = snapshot.status;
+  if (!status) return null;
+  const locale = snapshot.preferences.locale;
+  const staged = snapshot.pending.keys.includes("dongle-led");
+  return (
+    <article id="dongle-led-settings" className={`setting-card${staged ? " is-staged" : ""}`} data-pending-key="dongle-led">
+      <div className="setting-heading compact">
+        <div><p>WIRELESS</p><h2>{t(locale, "adv.dongleLed")}</h2></div>
+        <SwitchButton
+          id="dongle-led-toggle"
+          label={t(locale, "adv.dongleLed")}
+          value={status.dongleLedEnabled}
+          onChange={() => control.toggleDongleLed()}
+        />
+      </div>
+    </article>
+  );
+}
+
 export function DebounceCard({ snapshot }: { snapshot: ControlSnapshot }): ReactNode {
   const status = snapshot.status;
   if (!status) return null;
