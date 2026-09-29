@@ -213,6 +213,7 @@ const ATTACKSHARK: MouseStatus = {
   brand: "Attack Shark" as MouseStatus["brand"],
   name: "Attack Shark R5 Ultra",
   ui: { family: "attack-shark", hideUnsupportedPollingRates: true, forceShowBattery: true },
+  dongleLedEnabled: false,
   batteryPercent: 82,
   batteryState: "Discharging",
   dpi: 1600,

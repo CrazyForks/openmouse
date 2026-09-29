@@ -20,6 +20,7 @@ export interface CardAvailability {
   teevolutionDpiLighting: boolean;
   finalmouse: boolean;
   incott: boolean;
+  dongleLed: boolean;
   eggFilter: boolean;
   eggSpdt: boolean;
   eggPolling: boolean;
@@ -60,6 +61,7 @@ const NOTHING: CardAvailability = {
   teevolutionDpiLighting: false,
   finalmouse: false,
   incott: false,
+  dongleLed: false,
   eggFilter: false,
   eggSpdt: false,
   eggPolling: false,
@@ -161,6 +163,8 @@ export function cardAvailability(snapshot: ControlSnapshot): CardAvailability {
     // actually reported.
     incott: host
       && (status.incottFireKeyTimes != null || status.incottReceiverLedMode != null),
+    // Drivers report a boolean only for receivers that answer the LED command.
+    dongleLed: typeof status.dongleLedEnabled === "boolean",
     eggFilter: eggs,
     eggSpdt: eggs,
     // The 4K v2 reports no divider: its polling byte is a vendor enum.

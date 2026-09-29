@@ -3789,7 +3789,7 @@ export function applyLightforceSwitchMode(mode: NonNullable<MouseStatus["lightfo
 }
 
 export function toggleDongleLed(): void {
-  if (!pulsarClient()) return;
+  if (!hasActiveClient()) return;
   const enabled = withPendingChanges(latestDeviceStatus!).dongleLedEnabled !== true;
   stageChange({
     key: "dongle-led",
@@ -3800,7 +3800,7 @@ export function toggleDongleLed(): void {
       status.dongleLedEnabled = enabled;
     },
     apply: async () => {
-      const client = pulsarClient();
+      const client = activeSettingsClient();
       if (!client) throw new Error(st("ctl.receiverGone"));
       if (!("setDongleLed" in client)) {
         throw new Error(st("ctl.noLedControl"));
