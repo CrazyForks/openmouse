@@ -347,6 +347,24 @@ test("the generic button card follows the driver's mappings, not the advanced se
   assert.equal(has.processing, false, "the rest of the advanced section stays closed");
 });
 
+test("the G-Wolves XVI generation opens sleep, debounce and processing, but not signal", () => {
+  const cards = cardAvailability(snapshot({
+    status: {
+      brand: "G-Wolves",
+      ui: { family: "gwolves-xvi" },
+      motionSync: false,
+      angleSnapping: true,
+      rippleControl: null,
+      debounceMs: 2,
+      sleepTimeout: 60,
+    },
+  }));
+  assert.equal(cards.sleep, true);
+  assert.equal(cards.debounce, true);
+  assert.equal(cards.processing, true);
+  assert.equal(cards.signal, false);
+});
+
 test("the Incott card follows the fields the device reported, not a brand trait", () => {
   // Wireless: both controls are present.
   const wireless = cardAvailability(snapshot({

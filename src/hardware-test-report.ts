@@ -392,15 +392,17 @@ export function pickFlashPollRateTarget(current: number | null, options: readonl
 }
 
 /**
- * Picks the least obtrusive alternate lift-off level. Medium is the middle of
- * the physical range, so it is preferred whenever the device is not already on
- * it; a Medium device falls back to Low.
+ * Picks the least obtrusive alternate lift-off level the device offers.
+ * Medium is the middle of the physical range, so it is preferred whenever the
+ * device is not already on it, then Low, then High (a Low/High-only mouse
+ * such as the G-Wolves HTX Mini).
  */
 export function pickFlashLiftOffTarget(
   current: "Low" | "Medium" | "High" | null,
+  supported: readonly ("Low" | "Medium" | "High")[] = ["Low", "Medium", "High"],
 ): "Low" | "Medium" | "High" | null {
   if (current === null) return null;
-  return current === "Medium" ? "Low" : "Medium";
+  return (["Medium", "Low", "High"] as const).find((level) => level !== current && supported.includes(level)) ?? null;
 }
 
 /** One setting's write → read-back → restore leg of the flash round-trip. */
